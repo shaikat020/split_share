@@ -1,0 +1,130 @@
+<!-- templates/tracker/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --light: #f9fafb;
+            --gray: #d1d5db;
+            --dark: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            padding: 40px;
+        }
+
+        .card {
+            background-color: white;
+            max-width: 800px;
+            margin: auto;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 20px;
+            color: var(--dark);
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .person-entry {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4338ca;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>💰 Expense Tracker</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label>Total Amount:</label>
+            <input type="number" name="total_amount" placeholder="Enter total expense amount" required>
+
+            <label>Total Persons:</label>
+            <input type="number" name="total_persons" id="person_count" placeholder="Enter number of people" required>
+
+            <div id="person_inputs"></div>
+
+            <button type="submit">💾 Calculate & Save</button>
+        </form>
+    </div>
+
+    <script>
+        const personCountInput = document.getElementById("person_count");
+        const personContainer = document.getElementById("person_inputs");
+
+        personCountInput.addEventListener("input", () => {
+            personContainer.innerHTML = "";
+            const count = parseInt(personCountInput.value);
+            if (isNaN(count) || count <= 0) return;
+
+            for (let i = 0; i < count; i++) {
+                const entry = document.createElement("div");
+                entry.classList.add("person-entry");
+                entry.innerHTML = `
+                    <label>Person ${i + 1} Name:</label>
+                    <input type="text" name="name_${i}" placeholder="e.g., Alice" required>
+                    <label>Paid Amount:</label>
+                    <input type="number" name="paid_${i}" placeholder="e.g., 200" required>
+                `;
+                personContainer.appendChild(entry);
+            }
+        });
+    </script>
+</body>
+</html>
